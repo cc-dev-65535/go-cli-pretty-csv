@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"cli/csv/lib"
 	"log"
 	"os"
 
@@ -23,7 +24,7 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		err := PrettyExec(args)
+		err := lib.PrettyExec(args)
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
