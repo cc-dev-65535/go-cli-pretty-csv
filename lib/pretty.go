@@ -1,30 +1,37 @@
 package lib
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func PrettyExec(args []string) error {
-	// create a new CsvFile struct
-	csvFile := &CsvFile{
-		filePath: args[0],
-		content:  nil,
-	}
-	fmt.Println(csvFile)
-	records, err := csvFile.ReadCsvFile()
+	csvFile, err := NewCsvFile(args[0])
 	if err != nil {
 		return err
 	}
-	fmt.Println(records)
-	csvFile.content = records
 
 	// TODO: implement the pretty print logic here
-
-	// print the contents of the csv file
+	columns := len(csvFile.content[0])
+	var maxLengths = make([]int, columns)
 	for _, record := range csvFile.content {
-		for _, field := range record {
-			fmt.Printf("%s ", field)
+		for i, column := range record {
+			if len(column) > maxLengths[i] {
+				maxLengths[i] = len(column)
+			}
 		}
-		fmt.Println()
 	}
+
+	for i, record := range csvFile.content {
+		for j := range record {
+			if len(csvFile.content[i][j]) < maxLengths[j] {
+				csvFile.content[i][j] = fmt.Sprintf("%s%s", csvFile.content[i][j], strings.Repeat(" ", maxLengths[j]-len(csvFile.content[i][j])))
+				csvFile.content[i][j] += "|"
+			}
+		}
+	}
+
+	csvFile.printCsvFile()
 
 	return nil
 }
